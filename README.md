@@ -63,12 +63,14 @@ Frontend: HTML\CSS\JS - framework React
 - MU-1, MU-2
 - MA-1, MA-2
 
+
 ### **Sprint 2**
 (24.10.2022 - 07.11.2022)
 
 #### Zadania do wykonania 
 - MF-4
 - MU-4
+
 
 ### **Sprint 3**
 (07.11.2022 - 21.11.2022)
@@ -77,6 +79,7 @@ Frontend: HTML\CSS\JS - framework React
 - MF-5
 - MU-5
 
+
 ### **Sprint 4**
 (21.11.2022 - 05.12.2022)
 
@@ -84,17 +87,20 @@ Frontend: HTML\CSS\JS - framework React
 - MF-6
 - MU-6
 
+
 ### **Sprint 5**
 (21.11.2022 - 19.12.2022)
 
 #### Zadania do wykonania 
 - MF-3a - MF-3c
 
+
 ### **Sprint 6**
 (19.12.2022 - 09.01.2023)
 
 #### Zadania do wykonania 
 - MU-3a - MU-3c
+
 
 ### **Sprint 7**
 (19.12.2022 - 09.01.2023)
