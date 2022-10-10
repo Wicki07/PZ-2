@@ -11,8 +11,8 @@ Projekt uczelniany do organizacji zajęć dla firm, umożliwiający łatwe zarz�
 
 ### Wykorzystane technologie:
 
-Backend: Python - framework Django
-Frontend: HTML\CSS\JS - framework React
+##### Backend: Python - framework Django
+##### Frontend: HTML\CSS\JS - framework React
 
 ---
 
