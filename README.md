@@ -4,10 +4,10 @@
 Projekt uczelniany do organizacji zajęć dla firm, umożliwiający łatwe zarządzanie nimi oraz zapisy.
 
 ### Osoby tworzące projekt
-#### Stanisław JABŁOŃSKI [@StanislawJablonski](https://github.com/StanislawJablonski)
-#### Marian BUZAK [@Mbuzak](https://github.com/Mbuzak)
-#### Jakub ZABŁOCKI [@Tingllex](https://github.com/Tingllex)
-#### Mateusz WICKI [@Wicki07](https://github.com/Wicki07)
+#### Stanisław JABŁOŃSKI [@StanislawJablonski](https://github.com/StanislawJablonski) (Backend)
+#### Marian BUZAK [@Mbuzak](https://github.com/Mbuzak) (Backend)
+#### Jakub ZABŁOCKI [@Tingllex](https://github.com/Tingllex) (Backend)
+#### Mateusz WICKI [@Wicki07](https://github.com/Wicki07) (Frontend)
 
 ### Wykorzystane technologie:
 
