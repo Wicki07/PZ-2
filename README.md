@@ -59,8 +59,7 @@ Projekt uczelniany do organizacji zajęć dla firm, umożliwiający łatwe zarz�
 
 #### Zadania do wykonania 
 - Bazowy wygląd strony domowej
-- MF-1, MF-2
-- MU-1, MU-2
+- Rozplanowanie bazy danych
 - MA-1, MA-2
 
 
@@ -68,6 +67,8 @@ Projekt uczelniany do organizacji zajęć dla firm, umożliwiający łatwe zarz�
 (24.10.2022 - 07.11.2022)
 
 #### Zadania do wykonania 
+- MF-1, MF-2
+- MU-1, MU-2
 - MF-4
 - MU-4
 
