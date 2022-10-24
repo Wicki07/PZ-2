@@ -5,13 +5,13 @@ from .models import Account
 
 class AccountAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('User', {'fields': ('email', 'name', 'lastname')}),
+        ('User', {'fields': ('email', 'name', 'last_name')}),
         ('Contact', {'fields': ('phone_no',)}),
         ('Permission', {'fields': ('role',)}),
     ]
 
-    list_filter = ('name', 'lastname', 'role')
+    list_filter = ('name', 'last_name', 'role')
 
-    list_display = ('name', 'lastname', 'email', 'role')
+    list_display = ('name', 'last_name', 'email', 'role')
 
 admin.site.register(Account, AccountAdmin)

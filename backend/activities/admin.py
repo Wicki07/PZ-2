@@ -7,28 +7,28 @@ class ActivityAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Info', {'fields': ('title', 'description')}),
         ('Date', {'fields': ('datetime',)}),
-        ('Lecturer', {'fields': ('id_lecturer',)}),
-        ('Details', {'fields': ('period', 'participant_no', 'id_business')}),
+        ('Lecturer', {'fields': ('account_id',)}),
+        ('Details', {'fields': ('period', 'participant_no', 'business_id')}),
     ]
 
     list_filter = (
         ('datetime', admin.DateFieldListFilter),
-        'id_lecturer',
+        'account_id',
         'period',
-        'id_business'
+        'business_id'
     )
 
-    list_display = ('title', 'datetime', 'id_lecturer', 'period', 'id_business')
+    list_display = ('title', 'datetime', 'account_id', 'period', 'business_id')
 
 
 class ParticipantAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Info', {'fields': ('id_participant', 'id_class')}),
+        ('Info', {'fields': ('participant_id_id', 'activity_id')}),
     ]
 
-    list_filter = ('id_participant', 'id_class')
+    list_filter = ('participant_id_id', 'activity_id')
 
-    list_display = ('id_participant', 'id_class')
+    list_display = ('participant_id_id', 'activity_id')
 
 
 admin.site.register(Activity, ActivityAdmin)
