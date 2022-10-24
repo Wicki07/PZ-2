@@ -21,7 +21,7 @@ function Header() {
           <Nav className="me-auto">
             <Nav.Link href="#about">O projekcie</Nav.Link>
             <Nav.Link href="#features">Możliwości</Nav.Link>
-            <Nav.Link href="#pricing">Dołącz już teraz!</Nav.Link>
+            <Nav.Link href="#join">Dołącz już teraz!</Nav.Link>
           </Nav>
           <Navbar.Text>
             Zalogowany jako: <a href="#login">Username</a>
