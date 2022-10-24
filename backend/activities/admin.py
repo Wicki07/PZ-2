@@ -3,32 +3,33 @@ from .models import Activity, Participant
 
 # Register your models here.
 
+
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Info', {'fields': ('title', 'description')}),
         ('Date', {'fields': ('datetime',)}),
-        ('Lecturer', {'fields': ('account_id',)}),
-        ('Details', {'fields': ('period', 'participant_no', 'business_id')}),
+        ('Lecturer', {'fields': ('account',)}),
+        ('Details', {'fields': ('period', 'participant_number', 'business')}),
     ]
 
     list_filter = (
         ('datetime', admin.DateFieldListFilter),
-        'account_id',
+        'account',
         'period',
-        'business_id'
+        'business'
     )
 
-    list_display = ('title', 'datetime', 'account_id', 'period', 'business_id')
+    list_display = ('title', 'datetime', 'account', 'period', 'business')
 
 
 class ParticipantAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Info', {'fields': ('participant_id_id', 'activity_id')}),
+        ('Info', {'fields': ('account_id', 'activity_id')}),
     ]
 
-    list_filter = ('participant_id_id', 'activity_id')
+    list_filter = ('account_id', 'activity_id')
 
-    list_display = ('participant_id_id', 'activity_id')
+    list_display = ('account_id', 'activity_id')
 
 
 admin.site.register(Activity, ActivityAdmin)

@@ -6,7 +6,7 @@ from .models import Account
 class AccountAdmin(admin.ModelAdmin):
     fieldsets = [
         ('User', {'fields': ('email', 'name', 'last_name')}),
-        ('Contact', {'fields': ('phone_no',)}),
+        ('Contact', {'fields': ('phone',)}),
         ('Permission', {'fields': ('role',)}),
     ]
 

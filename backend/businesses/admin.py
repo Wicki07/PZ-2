@@ -5,7 +5,7 @@ from .models import Business
 class BusinessAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Business', {'fields': ('name', 'email')}),
-        ('Contact', {'fields': ('phone_no',)}),
+        ('Contact', {'fields': ('phone',)}),
         ('Detail', {'fields': ('theme',)}),
     ]
 

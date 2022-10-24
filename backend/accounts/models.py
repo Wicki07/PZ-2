@@ -9,7 +9,6 @@ def upload_path(instance, file):
 
 
 class Account(models.Model):
-    account_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     email = models.EmailField(max_length=50, blank=False, default='')
     name = models.CharField(max_length=50, blank=False, default='')
     last_name = models.CharField(max_length=50, blank=False, default='')

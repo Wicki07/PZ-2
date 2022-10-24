@@ -6,7 +6,6 @@ from businesses.models import *
 
 # Create your models here.
 class Activity(models.Model):
-    activity_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, blank=False, default='')
@@ -17,6 +16,5 @@ class Activity(models.Model):
 
 
 class Participant(models.Model):
-    participant_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
