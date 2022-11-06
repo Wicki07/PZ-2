@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% for activity in object_list %}
+    <p>{{ activity.title }}</p>
+{% endfor %}
+
+{% endblock content %}
