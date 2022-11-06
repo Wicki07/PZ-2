@@ -19,12 +19,12 @@ function Header() {
           </Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
           <Nav className="me-auto">
-            <Nav.Link href="#about">O projekcie</Nav.Link>
-            <Nav.Link href="#features">Możliwości</Nav.Link>
-            <Nav.Link href="#join">Dołącz już teraz!</Nav.Link>
+            <Nav.Link href="/#about">O projekcie</Nav.Link>
+            <Nav.Link href="/#features">Możliwości</Nav.Link>
+            <Nav.Link href="/#join">Dołącz już teraz!</Nav.Link>
           </Nav>
           <Navbar.Text>
-            Zalogowany jako: <a href="#login">Username</a>
+            Zalogowany jako: <a href="/login">Username</a>
           </Navbar.Text>
         </Navbar.Collapse>
         </Container>
