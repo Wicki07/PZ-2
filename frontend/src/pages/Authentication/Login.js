@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Alert } from 'react-bootstrap';
 
 function Login(props){
@@ -88,10 +88,10 @@ function Login(props){
             <Form.Group>
               <Alert variant={'danger'} show={ !!errors.login } type='invalid'>{ errors.login }</Alert>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mt-3">
               <Form.Check type="checkbox" label="Zapamiętaj mnie!" onChange={ e => !rememberme }/>
             </Form.Group>
-            <Form.Group className="text-center">
+            <Form.Group className="text-center mt-3">
               <Button className="rounded-pill col-6" type='submit' onClick={ handleSubmit }>Zaloguj</Button>
             </Form.Group>
             <Form.Group className="text-center">
