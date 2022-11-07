@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { useSelector } from 'react-redux'
 import { Alert } from 'react-bootstrap';
 
-function Login(props){
+function Login(){
 
   const form = {}
   const rememberme = false
@@ -22,9 +22,7 @@ function Login(props){
     if ( !username || username === '' ) {
       formValidated = false
       newErrors.username = 'Podaj adres email!'
-    }
-
-    else if(!/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(username)) {
+    } else if(!/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(username)) {
       formValidated = false 
       newErrors.username = 'Podano zły format! \'example@mail.com\''
     }
@@ -32,9 +30,7 @@ function Login(props){
     if ( !password || password === '' ){
       formValidated = false  
       newErrors.password = 'Podaj hasło!'
-    }
-
-    else if(password.length < 8){
+    } else if(password.length < 8){
       formValidated = false  
       newErrors.password = 'Podano zakrótkie hasło!'
     }
