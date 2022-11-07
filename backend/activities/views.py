@@ -4,48 +4,61 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 from django.views.generic.list import ListView
 
 from .models import Activity, Participant
-from accounts import Account
+from accounts import *
 
 from django.urls import reverse_lazy
 
+from .forms import ActivityForm
+
 
 class IndexActivity(ListView):
-	# template_name = ''
+	template_name = 'index.html'
 	queryset = Activity.objects.all().order_by('datetime')
 
 
-class CreateActivity(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class DetailActivity(DetailView):
 	model = Activity
-	fields = '__all__'
+	template_name = 'detail.html'
 
-	# template_name = ''
-	# success_url = reverse_lazy('')
-	# permission_required = ('',)
+	def get_context_data(self, **kwargs):
+		context = super(DetailActivity, self).get_context_data()
+		return context
 
+
+class CreateActivity(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+	form_class = ActivityForm
+
+	template_name = 'create.html'
+	success_url = reverse_lazy('activity_index')
+	permission_required = ('',)
+
+	'''
 	# user which creates new activity must be a lecturer
 	def form_valid(self, form):
 		form.instance.account = Account.objects.get(pk=self.request.user.id)
 		return super(CreateActivity, self).form_valid(form)
+	'''
 
 
 class UpdateActivity(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 	model = Activity
 	fields = '__all__'
 
-	# template_name = ''
-	# permission_required = ('',)
-	# success_url = ''
+	template_name = 'update.html'
+	success_url = reverse_lazy('activity_index')
+	permission_required = ('',)
 
 
 class DeleteActivity(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 	model = Activity
-	# success_url = reverse_lazy('')
-	# permission_required = ('',)
+	template_name = 'delete.html'
+	success_url = reverse_lazy('activity_index')
+	permission_required = ('',)
 
 
 class CreateParticipant(LoginRequiredMixin, CreateView):
 	model = Participant
 	fields = '__all__'
 
-	# template_name = ''
-	# success_url = reverse_lazy('')
+	template_name = 'create_participant.html'
+	success_url = reverse_lazy('activity_index')
