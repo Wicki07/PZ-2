@@ -4,6 +4,7 @@ import {
 import Main from './pages/Main';
 import Login from './pages/Authentication/Login';
 import Register from './pages/Authentication/Register';
+import CreateActivity from './pages/Activities/CreateActivity';
 
 const router = 
   createBrowserRouter([
@@ -18,6 +19,10 @@ const router =
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/createactivity",
+      element: <CreateActivity />,
     },
   ]);
 
