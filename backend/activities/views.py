@@ -4,7 +4,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 from django.views.generic.list import ListView
 
 from .models import Activity, Participant
-from accounts import *
+
 
 from django.urls import reverse_lazy
 

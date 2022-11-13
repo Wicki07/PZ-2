@@ -37,12 +37,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts.apps.AccountsConfig',
     'businesses.apps.BusinessesConfig',
     'activities.apps.ActivitiesConfig',
     'backend',
     'crispy_forms',
+    'rest_framework',
+    'knox',
+    'authentication',
+    'django_rest_passwordreset',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ]
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -93,7 +106,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pz_2',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'cebula123',
         'HOST': '',
         'PORT': '3306'
     }

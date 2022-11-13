@@ -16,8 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from authentication.views import RegisterAPI, ChangePasswordView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),
     path('activities/', include('activities.urls')),
+    path('api/register/', RegisterAPI.as_view(), name='register'),
+    path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
+    path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('authentication/', include('authentication.urls')),
 ]
