@@ -26,7 +26,7 @@ class Business(models.Model):
 
 class Activity(models.Model):
     activity_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE,related_name="account")
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, blank=False, default='')
     description = models.TextField(max_length=255, blank=True, default='')
@@ -37,5 +37,5 @@ class Activity(models.Model):
 
 class Participant(models.Model):
     participant_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE,related_name="account2")
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
