@@ -24,7 +24,7 @@ function Header() {
             <Nav.Link href="/#join">Dołącz już teraz!</Nav.Link>
           </Nav>
           <Navbar.Text>
-            Zalogowany jako: <a href="/login">Username</a>
+            <a href="/login">Zaloguj</a>
           </Navbar.Text>
         </Navbar.Collapse>
         </Container>
