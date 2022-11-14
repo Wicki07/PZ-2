@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.backend.models import *
+from backend.models import *
 
 
 class AccountSerializer(serializers.ModelSerializer):

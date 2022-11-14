@@ -4,6 +4,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 from django.views.generic.list import ListView
 
 from .models import Activity, Participant
+
 from accounts.models import *
 from businesses.models import *
 
