@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'activities.apps.ActivitiesConfig',
     'backend',
     'crispy_forms',
-
     'rest_framework',
 ]
 

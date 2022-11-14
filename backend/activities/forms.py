@@ -11,3 +11,10 @@ class ActivityForm(forms.ModelForm):
         model = Activity
         fields = '__all__'
         widgets = {'datetime': DateInput()}
+
+
+class EmailForm(forms.Form):
+    Email = forms.EmailField()
+
+    def __str__(self):
+        return self.Email
