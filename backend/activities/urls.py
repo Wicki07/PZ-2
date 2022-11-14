@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import *
+from .views import ActivityAPI, ActivitiesViewSet
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('act', ActivitiesViewSet)
 
 urlpatterns = [
-	path('', IndexActivity.as_view(), name='activity_index'),
-	path('create/', CreateActivity.as_view(), name='activity_create'),
-	path('<int:pk>/detail', DetailActivity.as_view(), name='activity_detail'),
-	path('<int:pk>/update/', UpdateActivity.as_view(), name='activity_update'),
-	path('<int:pk>/delete/', DeleteActivity.as_view(), name='activity_delete'),
-
-	path('participant_create/', CreateParticipant.as_view(), name='participant_create'),
+	path('xxx', ActivityAPI.as_view()),
+	path('xxx/<int:pk>', ActivityAPI.as_view()),
 ]
