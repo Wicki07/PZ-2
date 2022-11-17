@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -5,24 +6,28 @@ from django.contrib.auth.models import User
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
+        User = get_user_model()
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'role', 'email')
 
 
 # Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
+        User = get_user_model()
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('id', 'role', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+        User = get_user_model()
+        user = User.objects.create_user(validated_data['role'],validated_data['email'], validated_data['password'])
 
         return user
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    User = get_user_model()
     model = User
 
     """
