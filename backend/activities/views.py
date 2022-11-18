@@ -1,16 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, View
-from django.views.generic.list import ListView
-
 from .models import Activity, Participant
-from accounts.models import *
-from businesses.models import *
-
-from django.urls import reverse_lazy
+from accounts.models import Account
+from businesses.models import Business
 from django.contrib.auth import get_user_model
-
-from .forms import ActivityForm
 from .serializers import ActivitySerializer
 
 from rest_framework.response import Response
@@ -19,14 +10,22 @@ from rest_framework import generics, permissions, status, viewsets
 
 class ActivityAPI(generics.GenericAPIView):
 	serializer_class = ActivitySerializer
+
 	authentication_classes = []
 	permission_classes = []
 
-	def post(self, request, *args, **kwargs):
+	def get(self, request, format=None):
+		activities = Activity.objects.all()
+		return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)
+
+	def post(self, request, format=None):
 		if request.data.__contains__('id'):
+			account = Account.objects.get(id=request.data['account'])
+			business = Business.objects.get(id=request.data['business'])
+
 			activity = Activity.objects.get(id=request.data['id'])
-			activity.account = request.data['account']
-			activity.business = request.data['business']
+			activity.account = account
+			activity.business = business
 			activity.title = request.data['title']
 			activity.description = request.data['description']
 			activity.datetime = request.data['datetime']
@@ -51,25 +50,20 @@ class ActivityAPI(generics.GenericAPIView):
 			activity.save()
 			return Response({'message': '{} Activity has been created'}, status=status.HTTP_200_OK)
 
+	def delete(self, request, format=None):
+		Activity.objects.get(id=request.data['id']).delete()
+		return Response({'message': '{} Activity has been deleted'}, status=status.HTTP_204_NO_CONTENT)
 
-class ActivitiesViewSet(viewsets.ModelViewSet):
-	queryset = get_user_model().objects.none()
+
+class PeriodActivityAPI(generics.GenericAPIView):
+	serializer_class = ActivitySerializer
 
 	authentication_classes = []
 	permission_classes = []
 
-	# Lista serializerii dla danech typów zapytań
-	serializer_classes = {
-		'GET': ActivitySerializer,
-	}
-
-	# Jeżeli danego zapytania nie ma na liście serializer_classes to wykorzystany będzie domyślny
-	default_serializer_class = ActivitySerializer
-
 	def get_queryset(self):
-		activities = Activity.objects.all()
-		return activities
+		return None
 
-	# Metoda wybiera z jakiego serializera będziemy korzystać
-	def get_serializer_class(self):
-		return self.serializer_classes.get(self.action, self.default_serializer_class)
+	def get(self, request, format=None):
+		activities = Activity.objects.filter(datetime__day='01')
+		return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)

@@ -6,3 +6,8 @@ class ActivitySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Activity
 		fields = '__all__'
+
+	def update(self, instance, validated_data):
+		instance.title = validated_data['title']
+		instance.save()
+		return instance
