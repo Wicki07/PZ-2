@@ -15,3 +15,6 @@ class Account(models.Model):
     phone = models.BigIntegerField(blank=True, default='')
     image = models.ImageField(null=True, upload_to=upload_path)
     role = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return f'{self.name} {self.last_name}'

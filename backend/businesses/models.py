@@ -8,3 +8,6 @@ class Business(models.Model):
     email = models.EmailField(max_length=50, blank=False, default='')
     phone = models.BigIntegerField(blank=True, default='')
     theme = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.name

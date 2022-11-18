@@ -58,6 +58,7 @@ class ActivityAPI(generics.GenericAPIView):
 		return Response({'message': '{} Activity has been deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
+# IMPORTANT: there should be filter option for logged user
 class PeriodActivityAPI(generics.GenericAPIView):
 	serializer_class = ActivitySerializer
 
@@ -67,15 +68,36 @@ class PeriodActivityAPI(generics.GenericAPIView):
 	def get_queryset(self):
 		return None
 
-	def text_to_date(self, text):
-		return make_aware(datetime.strptime(text, '%d.%m.%Y'), timezone=None)
-
 	def get(self, request, format=None):
+		filter_object = self.get_filter_object(request.data)
+		if not filter_object:
+			return Response({'message: {} Bad request 1'}, status=status.HTTP_400_BAD_REQUEST)
+
 		try:
 			from_date = self.text_to_date(request.data['from_date'])
 			to_date = self.text_to_date(request.data['to_date'])
 
+			name, value = filter_object
 			activities = Activity.objects.filter(datetime__range=(from_date, to_date))
-			return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)
+			object_activities = activities
+
+			if name == 'business':
+				object_activities = activities.filter(business__name=value)
+			elif name == 'lecturer':
+				object_activities = activities.filter(account_id=value)
+
+			return Response(ActivitySerializer(object_activities, many=True).data, status=status.HTTP_200_OK)
 		except ValueError:
-			return Response({'message: {} Bad request'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'message: {} Bad request 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+	def text_to_date(self, text):
+		return make_aware(datetime.strptime(text, '%d.%m.%Y'), timezone=None)
+
+	# lecturer or business
+	def get_filter_object(self, data):
+		keys = data.keys()
+		if 'business' in keys and 'lecturer' not in keys:
+			return 'business', data['business']
+		elif 'lecturer' in keys and 'business' not in keys:
+			return 'lecturer', data['lecturer']
+		return None
