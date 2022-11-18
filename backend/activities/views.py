@@ -1,11 +1,11 @@
 from .models import Activity, Participant
+from .serializers import ActivitySerializer
 from accounts.models import Account
 from businesses.models import Business
-from django.contrib.auth import get_user_model
-from .serializers import ActivitySerializer
-
 from rest_framework.response import Response
-from rest_framework import generics, permissions, status, viewsets
+from rest_framework import generics, permissions, status
+from datetime import datetime
+from django.utils.timezone import make_aware
 
 
 class ActivityAPI(generics.GenericAPIView):
@@ -13,6 +13,9 @@ class ActivityAPI(generics.GenericAPIView):
 
 	authentication_classes = []
 	permission_classes = []
+
+	def get_queryset(self):
+		return None
 
 	def get(self, request, format=None):
 		activities = Activity.objects.all()
@@ -64,6 +67,15 @@ class PeriodActivityAPI(generics.GenericAPIView):
 	def get_queryset(self):
 		return None
 
+	def text_to_date(self, text):
+		return make_aware(datetime.strptime(text, '%d.%m.%Y'), timezone=None)
+
 	def get(self, request, format=None):
-		activities = Activity.objects.filter(datetime__day='01')
-		return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)
+		try:
+			from_date = self.text_to_date(request.data['from_date'])
+			to_date = self.text_to_date(request.data['to_date'])
+
+			activities = Activity.objects.filter(datetime__range=(from_date, to_date))
+			return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)
+		except ValueError:
+			return Response({'message: {} Bad request'}, status=status.HTTP_400_BAD_REQUEST)
