@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'authentication',
+    'accounts',
     'django_rest_passwordreset',
 ]
 
@@ -106,7 +107,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pz_2',
         'USER': 'root',
-        'PASSWORD': 'cebula123',
+        'PASSWORD': '',
         'HOST': '',
         'PORT': '3306'
     }

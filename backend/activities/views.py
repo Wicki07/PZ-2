@@ -5,8 +5,9 @@ from django.views.generic.list import ListView
 
 from .models import Activity, Participant
 
-from accounts.models import *
+from authentication.models import *
 from businesses.models import *
+from backend.models import *
 
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model

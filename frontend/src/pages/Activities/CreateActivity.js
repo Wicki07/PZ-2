@@ -11,12 +11,8 @@ function CreateActivity(props) {
   const [ activityName, setActivityName ] = useState("")
   
 
-<<<<<<< HEAD
   const validation = async (e) => {
     e.preventDefault();
-=======
-  const validation = async (nameExist) => {
->>>>>>> 3eeefe631f48e54f7d025b5b71d4f09ae8d6fd0a
     const { activityname, date, starttime, endtime, periodicity, paricipant} = form
     const newErrors = {}
 
@@ -203,11 +199,7 @@ function CreateActivity(props) {
               <Alert variant={'danger'} show={ !!errors.register } type='invalid'>{ errors.register }</Alert>
             </Form.Group>
             <Form.Group className="text-center pt-4">
-<<<<<<< HEAD
               <Button className="rounded-pill col-6" type='submit' onClick={ validation }>Stwórz zajęcia</Button>
-=======
-              <Button className="rounded-pill col-6" type='submit' onClick={ validation }>Stwórz pracownika</Button>
->>>>>>> 3eeefe631f48e54f7d025b5b71d4f09ae8d6fd0a
             </Form.Group>
           </Form>
         </div>
