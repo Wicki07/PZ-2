@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
 ]
 
+AUTH_USER_MODEL = 'authentication.CustomUser'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.BasicAuthentication',
@@ -56,7 +58,11 @@ REST_FRAMEWORK = {
     ]
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserSerializer',
+}
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
