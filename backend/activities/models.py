@@ -16,6 +16,9 @@ class Activity(models.Model):
     period = models.CharField(max_length=50, blank=True, default='')
     participant_number = models.IntegerField(blank=True)
 
+    def __str__(self):
+        return f'{self.business} - {self.title}'
+
 
 class Participant(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="participant")

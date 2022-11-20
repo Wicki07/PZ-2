@@ -1,12 +1,7 @@
 from django.urls import path
-from .views import ActivityAPI, ActivitiesViewSet
-
-from rest_framework import routers
-
-router = routers.DefaultRouter()
-router.register('act', ActivitiesViewSet)
+from .views import ActivityAPI, PeriodActivityAPI
 
 urlpatterns = [
-	path('xxx', ActivityAPI.as_view()),
-	path('xxx/<int:pk>', ActivityAPI.as_view()),
+	path('', ActivityAPI.as_view()),
+	path('date_period', PeriodActivityAPI.as_view()),
 ]

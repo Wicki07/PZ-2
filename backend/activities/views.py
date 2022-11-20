@@ -15,21 +15,35 @@ from django.contrib.auth import get_user_model
 
 from .forms import ActivityForm
 from .serializers import ActivitySerializer
-
+from accounts.models import Account
+from businesses.models import Business
 from rest_framework.response import Response
-from rest_framework import generics, permissions, status, viewsets
+from rest_framework import generics, permissions, status
+from datetime import datetime
+from django.utils.timezone import make_aware
 
 
 class ActivityAPI(generics.GenericAPIView):
 	serializer_class = ActivitySerializer
+
 	authentication_classes = []
 	permission_classes = []
 
-	def post(self, request, *args, **kwargs):
+	def get_queryset(self):
+		return None
+
+	def get(self, request, format=None):
+		activities = Activity.objects.all()
+		return Response(ActivitySerializer(activities, many=True).data, status=status.HTTP_200_OK)
+
+	def post(self, request, format=None):
 		if request.data.__contains__('id'):
+			account = Account.objects.get(id=request.data['account'])
+			business = Business.objects.get(id=request.data['business'])
+
 			activity = Activity.objects.get(id=request.data['id'])
-			activity.account = request.data['account']
-			activity.business = request.data['business']
+			activity.account = account
+			activity.business = business
 			activity.title = request.data['title']
 			activity.description = request.data['description']
 			activity.datetime = request.data['datetime']
@@ -54,25 +68,51 @@ class ActivityAPI(generics.GenericAPIView):
 			activity.save()
 			return Response({'message': '{} Activity has been created'}, status=status.HTTP_200_OK)
 
+	def delete(self, request, format=None):
+		Activity.objects.get(id=request.data['id']).delete()
+		return Response({'message': '{} Activity has been deleted'}, status=status.HTTP_204_NO_CONTENT)
 
-class ActivitiesViewSet(viewsets.ModelViewSet):
-	queryset = get_user_model().objects.none()
+
+# IMPORTANT: there should be filter option for logged user
+class PeriodActivityAPI(generics.GenericAPIView):
+	serializer_class = ActivitySerializer
 
 	authentication_classes = []
 	permission_classes = []
 
-	# Lista serializerii dla danech typów zapytań
-	serializer_classes = {
-		'GET': ActivitySerializer,
-	}
-
-	# Jeżeli danego zapytania nie ma na liście serializer_classes to wykorzystany będzie domyślny
-	default_serializer_class = ActivitySerializer
-
 	def get_queryset(self):
-		activities = Activity.objects.all()
-		return activities
+		return None
 
-	# Metoda wybiera z jakiego serializera będziemy korzystać
-	def get_serializer_class(self):
-		return self.serializer_classes.get(self.action, self.default_serializer_class)
+	def get(self, request, format=None):
+		filter_object = self.get_filter_object(request.data)
+		if not filter_object:
+			return Response({'message: {} Bad request 1'}, status=status.HTTP_400_BAD_REQUEST)
+
+		try:
+			from_date = self.text_to_date(request.data['from_date'])
+			to_date = self.text_to_date(request.data['to_date'])
+
+			name, value = filter_object
+			activities = Activity.objects.filter(datetime__range=(from_date, to_date))
+			object_activities = activities
+
+			if name == 'business':
+				object_activities = activities.filter(business__name=value)
+			elif name == 'lecturer':
+				object_activities = activities.filter(account_id=value)
+
+			return Response(ActivitySerializer(object_activities, many=True).data, status=status.HTTP_200_OK)
+		except ValueError:
+			return Response({'message: {} Bad request 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+	def text_to_date(self, text):
+		return make_aware(datetime.strptime(text, '%d.%m.%Y'), timezone=None)
+
+	# lecturer or business
+	def get_filter_object(self, data):
+		keys = data.keys()
+		if 'business' in keys and 'lecturer' not in keys:
+			return 'business', data['business']
+		elif 'lecturer' in keys and 'business' not in keys:
+			return 'lecturer', data['lecturer']
+		return None

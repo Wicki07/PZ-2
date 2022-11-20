@@ -24,12 +24,12 @@ class ActivityAdmin(admin.ModelAdmin):
 
 class ParticipantAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Info', {'fields': ('account_id', 'activity_id')}),
+        ('Info', {'fields': ('account', 'activity')}),
     ]
 
-    list_filter = ('account_id', 'activity_id')
+    list_filter = ('account', 'activity')
 
-    list_display = ('account_id', 'activity_id')
+    list_display = ('account', 'activity')
 
 
 admin.site.register(Activity, ActivityAdmin)
