@@ -3,9 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, View
 from django.views.generic.list import ListView
 
+from backend.models import Account
 from .models import Activity, Participant
 
-from accounts.models import *
+
 from businesses.models import *
 
 from django.urls import reverse_lazy
