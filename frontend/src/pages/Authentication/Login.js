@@ -1,30 +1,34 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useSelector } from 'react-redux'
+import { useDispatch  } from 'react-redux'
+import { redirect } from "react-router-dom";
+import { setUser } from '../../store/userSlice'
 import { Alert } from 'react-bootstrap';
+import {axiosApi} from '../../axios'
 
 function Login(){
 
-  const form = {}
   const rememberme = false
   const [ errors, setErrors ] = useState({})
-  const user = useSelector((state) => state.user.user)
+  const [ form, setForm ] = useState({})
+  const dispatch = useDispatch()
 
   // document.cookie = "csrftoken="+data.token
 
-  const validation = (login) => {
-    const { username, password } = form
+  const validation = async () => {
+    const { email, password } = form
     const newErrors = {}
 
     let formValidated = true
 
-    if ( !username || username === '' ) {
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       formValidated = false
-      newErrors.username = 'Podaj adres email!'
-    } else if(!/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(username)) {
-      formValidated = false 
-      newErrors.username = 'Podano zły format! \'example@mail.com\''
+      newErrors.email = 'Podano zły format! \'example@mail.com\''
+    }
+    if ( !email || email === '' ) {
+      formValidated = false
+      newErrors.email = 'Podaj adres email!'
     }
 
     if ( !password || password === '' ){
@@ -36,10 +40,16 @@ function Login(){
     }
 
     if (formValidated){
-      // Sprawdzić czy konto aktywne
-      // newErrors.login = 'Twoje konto nie zostało jeszcze aktywowane!'
-      // Sprawdzić czy poprawne dane logowania
-      // newErrors.login = 'Nazwa użytkownika lub hasło nie zgadzają się. Sprawdź jeszcze raz i spróbuj ponownie.'
+      await axiosApi.post("/api/auth/login", {
+        ...form
+      }).then((res) => {
+        localStorage.setItem("user", JSON.stringify(res.data));
+        console.log(res.data)
+        redirect("/");
+      }).catch(({response}) => {
+        newErrors.login = response.data.non_field_errors[0]
+      })
+
     }
 
     return newErrors
@@ -53,21 +63,21 @@ function Login(){
       
     
       // Ponowna weryfikacja błędów
-      const newErrors = validation()
+      const newErrors = await validation()
       setErrors(newErrors)
+      console.log(errors)
     }
   
   return (
     <>
       <div className="container h-100">
-        {user.name}
         <div className="row h-100 justify-content-center align-items-center">
           <Form className="col-md-6">
             <Form.Group>
               <Form.Label>Adres Email</Form.Label>
               <Form.Control 
-                type='text' name="username"
-                onChange={ e => form.username = e.target.value }
+                type='text' name="email"
+                onChange={ e => setForm({...form, email: e.target.value })}
                 isInvalid={ !!errors.username }
               />
               <Form.Control.Feedback type='invalid'>{ errors.username }</Form.Control.Feedback>
@@ -76,7 +86,7 @@ function Login(){
               <Form.Label>Hasło</Form.Label>
               <Form.Control 
                 type='password' name="password"
-                onChange={ e => form.password = e.target.value }
+                onChange={ e => setForm({...form, password: e.target.value })}
                 isInvalid={ !!errors.password }
               />
               <Form.Control.Feedback type='invalid'>{ errors.password }</Form.Control.Feedback>

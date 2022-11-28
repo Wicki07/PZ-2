@@ -1,8 +1,10 @@
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { useSelector } from 'react-redux'
 
 function Header() {
+  const user = JSON.parse(localStorage.getItem("user"))
   return (
     <>
       <Navbar bg="light" variant="light">
@@ -24,7 +26,10 @@ function Header() {
             <Nav.Link href="/#join">Dołącz już teraz!</Nav.Link>
           </Nav>
           <Navbar.Text>
-            <a href="/login">Zaloguj</a>
+            {!user?.email &&
+              <a href="/login">Zaloguj</a>
+            }
+            {user?.email}
           </Navbar.Text>
         </Navbar.Collapse>
         </Container>

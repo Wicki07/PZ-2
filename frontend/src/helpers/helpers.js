@@ -13,8 +13,8 @@ function getWeekNumber() {
   var monthStartDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   monthStartDate = new Date(monthStartDate);
   var day = monthStartDate.getDay();
-  date = new Date(_date);
-  var date = date.getDate();
+  var date = new Date(_date);
+  date = date.getDate();
   return Math.ceil((date+ day-1)/ 7)-1;
 }
 

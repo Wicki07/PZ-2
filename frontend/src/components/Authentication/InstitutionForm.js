@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Alert, InputGroup } from 'react-bootstrap';
+import {axiosApi} from '../../axios'
 
-function InstitutionForm(){
+function InstitutionForm(props){
 
-  const form = {}
   const [ errors, setErrors ] = useState({})
+  const [ form, setForm ] = useState({})
 
-  const validation = (e) => {
+  const validation = async (e) => {
     e.preventDefault();
-    const { username, email, password, repassword, phone, category, profile } = form
+    const { username, email, password, repassword, phone, category } = form
     const newErrors = {}
 
     let formValidated = true
@@ -69,26 +70,27 @@ function InstitutionForm(){
       newErrors.category = 'Wybierz kategorię!'
     }
 
-    if ( !profile || profile === '' ) {
-      formValidated = false
-      newErrors.profile = 'Podaj profil!'
-    }
-
-    if ( !/^([a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ\s]){3,}$/g.test(profile) ) {
-      formValidated = false
-      newErrors.profile = 'Podano błędny profil! Profil nie może zawierać cyfr oraz znaków specjalnych'
-    }
-
     if((phone && phone !== '' ) && !/^(?<!\w)(\(?(\+|00)?48\)?)?[ -]?\d{3}[ -]?\d{3}[ -]?\d{3}(?!\w)/gm.test(phone)){
       formValidated = false
       newErrors.phone = 'Zły format telefonu!'
     }
-
+    console.log(form)
     // Rejestracja
     newErrors.register = undefined
     if(formValidated){
-      // Zwracanie odpowiedzi z zapytania do api
-
+      await axiosApi.post("/api/auth/register", {
+        ...form,
+        role: 'business',
+        isBusiness: true
+      }).then(() => {
+        props.setShowModal(true);
+        setForm({})
+      }).catch(({response}) => {
+        console.log(response)
+        if(response.data?.email[0] === "user with this email address already exists.") {
+          newErrors.register = "Użytkownik o podanym emailu już istnieje"
+        }
+      })
     }
 
     setErrors(newErrors)
@@ -103,7 +105,7 @@ function InstitutionForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='text' name="username"
-            onChange={ e => form.lastname = e.target.value }
+            onChange={ e => setForm({...form, username: e.target.value}) }
             isInvalid={ !!errors.username }
           />
           <Form.Control.Feedback type='invalid'>{ errors.username }</Form.Control.Feedback>
@@ -114,7 +116,7 @@ function InstitutionForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='email' name="email"
-            onChange={ e => form.lastname = e.target.value }
+            onChange={ e => setForm({...form, email: e.target.value}) }
             isInvalid={ !!errors.email }
           />
           <Form.Control.Feedback type='invalid'>{ errors.email }</Form.Control.Feedback>
@@ -125,7 +127,7 @@ function InstitutionForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='password' name="password"
-            onChange={ e => form.lastname = e.target.value }
+            onChange={ e => setForm({...form, password: e.target.value}) }
             isInvalid={ !!errors.password }
             data-toggle="password"
           />
@@ -142,7 +144,7 @@ function InstitutionForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='password' name="repassword"
-            onChange={ e => form.lastname = e.target.value }
+            onChange={ e => setForm({...form, repassword: e.target.value}) }
             isInvalid={ !!errors.repassword }
             data-toggle="repassword"
           />
@@ -154,7 +156,7 @@ function InstitutionForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='tel' name="phone"
-            onChange={ e => form.lastname = e.target.value }
+            onChange={ e => setForm({...form, phone: e.target.value}) }
             isInvalid={ !!errors.phone }
           />
           <Form.Control.Feedback type='invalid'>{ errors.phone }</Form.Control.Feedback>
@@ -164,7 +166,7 @@ function InstitutionForm(){
         <Form.Label>Kategoria</Form.Label>
         <Form.Select
             name="category"
-            value={form.category}
+            onChange={ e => setForm({...form, category: e.target.value}) }
             isInvalid={ !!errors.category }
             defaultValue="init"
           >

@@ -2,35 +2,36 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Alert, InputGroup } from 'react-bootstrap';
+import {axiosApi} from '../../axios'
 
-function UserForm(){
+function UserForm(props){
 
-  const form = {}
   const [ errors, setErrors ] = useState({})
+  const [ form, setForm ] = useState({})
 
-  const validation = (e) => {
+  const validation = async (e) => {
     e.preventDefault();
-    const { firstname, lastname, email, password, repassword, phone } = form
+    const { first_name, last_name, email, password, repassword, phone } = form
     const newErrors = {}
 
     let formValidated = true
 
-    if( !/^[A-ZĘÓŁŚĄŻŹĆŃ]+[a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ]{3,}$/.test(firstname)){
+    if( !/^[A-ZĘÓŁŚĄŻŹĆŃ]+[a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ]{3,}$/.test(first_name)){
       formValidated = false
-      newErrors.firstname = 'Podano błędne imie! Powinno zaczynać się z wielkiej litery i nie zawierac cyfr.'
+      newErrors.first_name = 'Podano błędne imie! Powinno zaczynać się z wielkiej litery i nie zawierac cyfr.'
     }
-    if ( !firstname || firstname === '' ) {
+    if ( !first_name || first_name === '' ) {
       formValidated = false
-      newErrors.firstname = 'Podaj imię!'
+      newErrors.first_name = 'Podaj imię!'
     }
     
-    if( !/^([A-ZĘÓŁŚĄŻŹĆŃ]+[a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ][a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ\-\s]+){1,}$/.test(lastname)){
+    if( !/^([A-ZĘÓŁŚĄŻŹĆŃ]+[a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ][a-zA-ZęółśążźćńĘÓŁŚĄŻŹĆŃ\-\s]+){1,}$/.test(last_name)){
       formValidated = false
-      newErrors.lastname = 'Podano błędne nazwisko! Powinno zaczynać się z wielkiej litery i nie zawierac cyfr.'
+      newErrors.last_name = 'Podano błędne nazwisko! Powinno zaczynać się z wielkiej litery i nie zawierac cyfr.'
     }
-    if ( !lastname || lastname === '' ) {
+    if ( !last_name || last_name === '' ) {
       formValidated = false
-      newErrors.lastname = 'Podaj nazwisko!'
+      newErrors.last_name = 'Podaj nazwisko!'
     }
 
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -80,7 +81,19 @@ function UserForm(){
     // Rejestracja
     newErrors.register = undefined
     if(formValidated){
-      // Zwracanie odpowiedzi z zapytania do api
+        await axiosApi.post("/api/auth/register", {
+          ...form,
+          role: 'user',
+          isBusiness: false
+        }).then(() => {
+          props.setShowModal(true);
+          setForm({})
+        }).catch(({response}) => {
+          console.log(response)
+          if(response.data?.email[0] === "user with this email address already exists.") {
+            newErrors.register = "Użytkownik o podanym emailu już istnieje"
+          }
+        })
 
     }
 
@@ -95,22 +108,22 @@ function UserForm(){
         <Form.Label>Podaj imię</Form.Label>
         <InputGroup className="mb-3">
           <Form.Control 
-            type='text' name="firstname"
-            onChange={ e => form.firstname = e.target.value }
-            isInvalid={ !!errors.firstname }
+            type='text' name="first_name"
+            onChange={ e => setForm({...form, first_name: e.target.value}) }
+            isInvalid={ !!errors.first_name }
           />
-          <Form.Control.Feedback type='invalid'>{ errors.firstname }</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid'>{ errors.first_name }</Form.Control.Feedback>
         </InputGroup>
       </Form.Group>
       <Form.Group>
         <Form.Label>Podaj nazwisko</Form.Label>
         <InputGroup className="mb-3">
           <Form.Control 
-            type='text' name="lastname"
-            onChange={ e => form.lastname = e.target.value }
-            isInvalid={ !!errors.lastname }
+            type='text' name="last_name"
+            onChange={ e => setForm({...form, last_name: e.target.value}) }
+            isInvalid={ !!errors.last_name }
           />
-          <Form.Control.Feedback type='invalid'>{ errors.lastname }</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid'>{ errors.last_name }</Form.Control.Feedback>
         </InputGroup>
       </Form.Group>
       <Form.Group>
@@ -118,7 +131,7 @@ function UserForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='email' name="email"
-            onChange={ e => form.email = e.target.value }
+            onChange={ e => setForm({...form, email: e.target.value}) }
             isInvalid={ !!errors.email }
           />
           <Form.Control.Feedback type='invalid'>{ errors.email }</Form.Control.Feedback>
@@ -129,7 +142,7 @@ function UserForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='password' name="password"
-            onChange={ e => form.password = e.target.value }
+            onChange={ e => setForm({...form, password: e.target.value}) }
             isInvalid={ !!errors.password }
             data-toggle="password"
           />
@@ -146,7 +159,7 @@ function UserForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='password' name="repassword"
-            onChange={ e => form.repassword = e.target.value }
+            onChange={ e => setForm({...form, repassword: e.target.value}) }
             isInvalid={ !!errors.repassword }
             data-toggle="repassword"
           />
@@ -158,7 +171,7 @@ function UserForm(){
         <InputGroup className="mb-3">
           <Form.Control 
             type='tel' name="phone"
-            onChange={ e => form.phone = e.target.value }
+            onChange={ e => setForm({...form, phone: e.target.value}) }
             isInvalid={ !!errors.phone }
           />
           <Form.Control.Feedback type='invalid'>{ errors.phone }</Form.Control.Feedback>

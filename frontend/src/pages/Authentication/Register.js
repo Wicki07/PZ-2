@@ -70,8 +70,8 @@ function Register(props){
                 </div>
               </div>
             </Form.Group>
-            {registrationType === "user" && <UserForm />}
-            {registrationType === "intitution" && <InstitutionForm />}
+            {registrationType === "user" && <UserForm setShowModal={setShowModal} />}
+            {registrationType === "intitution" && <InstitutionForm setShowModal={setShowModal} />}
           </Form>
         </div>
       </div>

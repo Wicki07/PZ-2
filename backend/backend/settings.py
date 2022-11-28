@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-dksr*@oa94gom_!a+ph$&y2c_m&ju=8i+gm1n2h6+tf_^sfiff
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://localhost:80',
+#     'http://localhost',
+# ] 
+
 
 
 # Application definition
@@ -37,18 +44,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'businesses.apps.BusinessesConfig',
-    'activities.apps.ActivitiesConfig',
     'backend',
-    'crispy_forms',
     'rest_framework',
+    'Authentication',
     'knox',
-    'authentication',
-    'accounts',
+    'corsheaders',
     'django_rest_passwordreset',
 ]
 
-AUTH_USER_MODEL = 'authentication.CustomUser'
+AUTH_USER_MODEL = 'Authentication.CustomUser'
+AUTHENTICATION_BACKENDS = ['Authentication.backends.EmailBackend']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -67,6 +72,7 @@ REST_AUTH_SERIALIZERS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,13 +147,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl-pl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -165,5 +174,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'projektnzi@gmail.com'
-EMAIL_HOST_PASSWORD = 'xwaauukvwdrgveul'
+EMAIL_HOST_USER = 'amw185ica1@gmail.com'
+EMAIL_HOST_PASSWORD = 'ocqclggpcarxkouy'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
