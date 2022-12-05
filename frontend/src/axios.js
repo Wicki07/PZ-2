@@ -11,7 +11,8 @@ const axiosApi = axios.create({
       : null,
     "Content-Type": "application/json",
     accept: "application/json",
-    userId: localStorage.getItem("user"),
+    // userId: JSON.parse(localStorage.getItem("user")).user?.id,
+    "Access-Control-Allow-Origin": "*"
   },
 });
 
