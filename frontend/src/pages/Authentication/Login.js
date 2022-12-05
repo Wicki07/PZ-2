@@ -40,14 +40,22 @@ function Login(){
     }
 
     if (formValidated){
-      await axiosApi.post("/api/auth/login", {
-        ...form
+      // await axiosApi.post("/api/auth/login", {
+      //   ...form
+      // }).then((res) => {
+      //   console.log(res)
+      //   localStorage.setItem("user", JSON.stringify(res.data));
+      //   console.log(res.data)
+      //   redirect("/");
+      // }).catch(({response}) => {
+      //   newErrors.login = response.data.non_field_errors[0]
+      // })
+      await fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', "Accept": "application/json",},
+        body: JSON.stringify(form) 
       }).then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.data));
-        console.log(res.data)
-        redirect("/");
-      }).catch(({response}) => {
-        newErrors.login = response.data.non_field_errors[0]
+        console.log(res)
       })
 
     }
