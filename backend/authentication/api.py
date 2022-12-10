@@ -80,3 +80,4 @@ class UsersActivationAccountViewSet(generics.RetrieveAPIView):
             return user
         else:
             return Response({'message': '{} Konto zostało już aktywowane'}, status=status.HTTP_204_NO_CONTENT)
+

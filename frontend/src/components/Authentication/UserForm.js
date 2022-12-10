@@ -81,19 +81,22 @@ function UserForm(props){
     // Rejestracja
     newErrors.register = undefined
     if(formValidated){
-        await axiosApi.post("/api/auth/register", {
-          ...form,
+      await fetch("http://localhost:8000/api/auth/register", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', "Accept": "application/json",},
+        body: JSON.stringify({...form, 
           role: 'user',
-          isBusiness: false
-        }).then(() => {
+          isBusiness: false}) 
+      }).then(async (res) => {
+        const data = await res.json();
+        if(res.status === 400) {
+          newErrors.register = data.email[0] === "Istnieje już User z tą wartością pola adres email." ? 
+            "Użytkownik o podanym emailu już istnieje" : ""
+        } else {
           props.setShowModal(true);
           setForm({})
-        }).catch(({response}) => {
-          console.log(response)
-          if(response.data?.email[0] === "user with this email address already exists.") {
-            newErrors.register = "Użytkownik o podanym emailu już istnieje"
-          }
-        })
+        }
+      })
 
     }
 

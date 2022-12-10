@@ -13,7 +13,7 @@ function CreateActivity(props) {
 
   const validation = async (e) => {
     e.preventDefault();
-    const { activityname, date, starttime, endtime, periodicity, paricipant} = form
+    const { activityname, date, starttime, endtime, periodicity, paricipant, amount } = form
     const newErrors = {}
 
     let formValidated = true
@@ -76,6 +76,11 @@ function CreateActivity(props) {
     if ( !paricipant || paricipant === '' ) {
       formValidated = false
       newErrors.paricipant = 'Wybierz prowadzącego!'
+    }
+
+    if ( amount <= 0 || amount > 1000  ) {
+      formValidated = false
+      newErrors.paricipant = 'Możliwa ilość zajęć: 1 - 1000'
     }
 
     // Rejestracja
@@ -183,6 +188,17 @@ function CreateActivity(props) {
                 <option value="Co miesiąc">Co miesiąc</option>
               </Form.Control>
               <Form.Control.Feedback type='invalid'>{ errors.periodicity }</Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Podaj ilość zajęć</Form.Label>
+              <InputGroup className="mb-3">
+                <Form.Control 
+                  type='number' name="amount"
+                  onChange={ e => form.amount = e.target.value }
+                  isInvalid={ !!errors.amount }
+                />
+                <Form.Control.Feedback type='invalid'>{ errors.amount }</Form.Control.Feedback>
+              </InputGroup>
             </Form.Group>
             <Form.Group>
               <Form.Label>Podaj prowadzącego</Form.Label>

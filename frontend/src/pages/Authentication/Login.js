@@ -42,7 +42,7 @@ function Login(){
         if(res.status === 400) {
           newErrors.login = data.non_field_errors[0]
         } else {
-          document.cookie = "csrftoken="+data.token
+          localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
           window.location = "/"
         }

@@ -12,9 +12,23 @@ function Header() {
     setUser(JSON.parse(userData))
   }, [])
 
-  const logout = () => {
-    setUser({})
-    localStorage.removeItem("user")
+  const logout = async () => {
+    await fetch("http://localhost:8000/api/auth/logout", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+        "Accept": "application/json", 
+        "Authorization": localStorage.getItem("token")
+      ? "Token " + localStorage.getItem("token")
+      : null,},
+    }).then(async (res) => {
+      if(res.status === 204) {
+        setUser({})
+        localStorage.removeItem("user")
+        window.location = "/"
+      }
+    })
+
   }
 
   return (
