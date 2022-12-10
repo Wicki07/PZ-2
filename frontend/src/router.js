@@ -4,6 +4,7 @@ import {
 import Main from './pages/Main';
 import Login from './pages/Authentication/Login';
 import Register from './pages/Authentication/Register';
+import Dashboard from './pages/Dashboard/Dashboard';
 import CreateActivity from './pages/Activities/CreateActivity';
 import WeekCalendar from './components/Calendar/WeekCalendar';
 import MonthCalendar from './components/Calendar/MonthCalendar';
@@ -14,6 +15,20 @@ const router =
     {
       path: "/",
       element: <Main />,
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+      children: [
+        {
+          path: "createactivity",
+          element: <CreateActivity />,
+        },
+        {
+          path: "weekCalendar",
+          element: <WeekCalendar />,
+        },
+      ]
     },
     {
       path: "/login",

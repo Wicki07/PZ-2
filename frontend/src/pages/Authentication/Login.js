@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useDispatch  } from 'react-redux'
-import { redirect } from "react-router-dom";
-import { setUser } from '../../store/userSlice'
 import { Alert } from 'react-bootstrap';
-import {axiosApi} from '../../axios'
 
 function Login(){
 
   const rememberme = false
   const [ errors, setErrors ] = useState({})
   const [ form, setForm ] = useState({})
-  const dispatch = useDispatch()
-
-  // document.cookie = "csrftoken="+data.token
 
   const validation = async () => {
     const { email, password } = form
@@ -40,22 +33,19 @@ function Login(){
     }
 
     if (formValidated){
-      // await axiosApi.post("/api/auth/login", {
-      //   ...form
-      // }).then((res) => {
-      //   console.log(res)
-      //   localStorage.setItem("user", JSON.stringify(res.data));
-      //   console.log(res.data)
-      //   redirect("/");
-      // }).catch(({response}) => {
-      //   newErrors.login = response.data.non_field_errors[0]
-      // })
-      await fetch("http://127.0.0.1:8000/api/auth/login", {
+      await fetch("http://localhost:8000/api/auth/login", {
         method: 'POST',
         headers: {'Content-Type': 'application/json', "Accept": "application/json",},
         body: JSON.stringify(form) 
-      }).then((res) => {
-        console.log(res)
+      }).then(async (res) => {
+        const data = await res.json();
+        if(res.status === 400) {
+          newErrors.login = data.non_field_errors[0]
+        } else {
+          document.cookie = "csrftoken="+data.token
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location = "/"
+        }
       })
 
     }
@@ -73,7 +63,6 @@ function Login(){
       // Ponowna weryfikacja błędów
       const newErrors = await validation()
       setErrors(newErrors)
-      console.log(errors)
     }
   
   return (

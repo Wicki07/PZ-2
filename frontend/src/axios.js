@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000";
+const baseURL = "http://localhost:8000/api";
 
 const axiosApi = axios.create({
   baseURL: baseURL, // Adres do serwera Django
@@ -12,7 +12,8 @@ const axiosApi = axios.create({
     "Content-Type": "application/json",
     accept: "application/json",
     // userId: JSON.parse(localStorage.getItem("user")).user?.id,
-    "Access-Control-Allow-Origin": "*"
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Heders": "privatekey"
   },
 });
 
