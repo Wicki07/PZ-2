@@ -63,18 +63,15 @@ class UserActivate(models.Model):
         verbose_name_plural = "UserActivations"
 
 class Business(models.Model):
-    user_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     category = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.user_id.username
+        return self.user.username
 
     def publish(self):
         self.save()
         
-    class Meta:
-        ordering = ('user_id',)
-
 class Leader(models.Model):
     business_id = models.ForeignKey('Business', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=150, blank=True)

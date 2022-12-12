@@ -18,7 +18,7 @@ function Activate(){
         }, 5000)
       }
     })
-  }, [])
+  }, [code])
   
   return (
     <>

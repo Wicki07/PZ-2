@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'knox',
     'corsheaders',
     'django_rest_passwordreset',
+    'activities',
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'

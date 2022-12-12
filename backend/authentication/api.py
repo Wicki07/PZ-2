@@ -19,7 +19,7 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception = True)
         user = serializer.save()
         if request.data['isBusiness']:
-          Business.objects.create(user_id=user, category = request.data['category'])
+          Business.objects.create(user=user, category = request.data['category'])
         return Response({
             "user": UserSerializer(user, context = self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1]
