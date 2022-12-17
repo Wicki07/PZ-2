@@ -1,8 +1,8 @@
 from django.urls import path
 from django.urls.conf import path, include
-from .api import ActivityAPI
-from knox import views as knox_views
+from .api import ActivityAPI, PraticipationAPI
 
 urlpatterns = [
-    path('api/activity/create', ActivityAPI.as_view()),
+    path('api/activity', ActivityAPI.as_view()),
+    path('api/participation', PraticipationAPI.as_view()),
 ]

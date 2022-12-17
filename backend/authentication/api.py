@@ -81,3 +81,20 @@ class UsersActivationAccountViewSet(generics.RetrieveAPIView):
         else:
             return Response({'message': '{} Konto zostało już aktywowane'}, status=status.HTTP_204_NO_CONTENT)
 
+class BusinessViewSet(generics.RetrieveAPIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    serializer_class = UserSerializer
+
+    default_serializer_class = UserSerializer
+    
+    def get_object(self):
+        User = get_user_model()
+        users = User.objects.filter(role = "business")
+        serializer = UserSerializer(users)
+        print(serializer.data)
+        return serializer.data,
+
+

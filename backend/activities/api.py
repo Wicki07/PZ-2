@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, serializers, viewsets
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.utils import serializer_helpers
-from .serializers import AcitivitySerializer
+from .serializers import AcitivitySerializer, PraticipationSerializer
 from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -15,6 +15,12 @@ class ActivityAPI(generics.GenericAPIView):
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        id = request.query_params.get('business')
+        data = Activity.objects.filter(business = id, base_activity = None)
+        serializer = AcitivitySerializer(data, many=True)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         business = Business.objects.filter(user = request.user.id).first()
@@ -52,3 +58,21 @@ class ActivityAPI(generics.GenericAPIView):
             return date + datetime.timedelta(days=7)
         if periodicy == 'Co dwa tygodnie':
             return date + datetime.timedelta(days=14)
+
+
+class PraticipationAPI(generics.GenericAPIView):
+    serializer_class = PraticipationSerializer
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        activity = Activity.objects.filter(id = request.data['activityId']).first()
+        data = request.data
+        data['activity'] = activity.id
+        data['user'] = request.user.id
+        serializer = self.get_serializer(data = data)
+        serializer.is_valid(raise_exception = True)
+        participation = serializer.save()
+        return Response(PraticipationSerializer(participation).data, status=status.HTTP_204_NO_CONTENT)
+

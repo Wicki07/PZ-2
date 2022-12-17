@@ -63,8 +63,8 @@ function WeekCalendar(props) {
 
   const CalendarMenu = () =>{
     return(
-      <div id='CalendarMenu' className="position-fixed w-100 shadow" style={{zIndex:'1001'}}>
-        <div className="bg-primary text-white text-center row" style={{height:'3rem'}}>
+      <div id='CalendarMenu' className="w-100 shadow" style={{zIndex:'1001'}}>
+        <div className="bg-primary text-white text-center row" style={{height:'3rem', marginLeft: "0", marginRight: "0"}}>
           <span className="col my-auto">{ getMonthName() } { new Date().getFullYear() }</span>
           {/* <Button onClick={()=>props.changeDisplayMode('day')} style={{marginRight:'1rem'}}>Dzisiaj</Button>
           <Button onClick={()=>props.changeDisplayMode('week')} style={{marginRight:'1rem'}}>Tydzień</Button>
@@ -72,8 +72,7 @@ function WeekCalendar(props) {
         </div>
         <Container style={{
           minHeight:'calc(100% - 3rem + 1px)',
-          width:  windowsize.width > 320 ? 'calc(100% - 0.5rem)' : '100%',
-          marginLeft:'-0.25rem',
+          width: '100%',
           display: 'grid',
           overflow:'hidden',
           padding:'0',
@@ -99,7 +98,6 @@ function WeekCalendar(props) {
   return (
     <>
       <CalendarMenu/>
-      <div className="bg-primary text-white text-center row" style={{height:'6rem'}}></div>
       <Container style={{
         minHeight:'calc(100% - 6rem + 1px)',
         minWidth:'100%',

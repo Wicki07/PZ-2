@@ -29,6 +29,14 @@ const router =
           path: "weekCalendar",
           element: <WeekCalendar />,
         },
+        {
+          path: "monthCalendar",
+          element: <MonthCalendar />,
+        },
+        {
+          path: "dayCalendar",
+          element: <DayCalendar />,
+        },
       ]
     },
     {

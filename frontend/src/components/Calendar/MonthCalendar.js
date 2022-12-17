@@ -58,13 +58,12 @@ function MonthCalendar(props) {
 
   const CalendarMenu = () => {
     return(
-      <div className="position-fixed w-100 shadow" style={{zIndex:'999'}}>
-        <div className="bg-primary text-white text-center row" style={{height:'3rem'}}>
+      <div className="w-100 shadow" style={{zIndex:'999'}}>
+        <div className="bg-primary text-white text-center row" style={{height:'3rem', marginLeft: "0", marginRight: "0"}}>
           <span className="col my-auto">{ getMonthName() } { new Date().getFullYear() }</span>
         </div>
         <Container style={{
-          width:windowsize.width > 320 ? 'calc(100% - 0.5rem)' : '100%',
-          marginLeft:'-0.25rem',
+          width: '100%',
           display: 'grid',
           overflow:'hidden',
           padding:'0',
@@ -91,7 +90,6 @@ function MonthCalendar(props) {
   return (
     <>
       <CalendarMenu/>
-      <div className="bg-primary text-white text-center row" style={{height:'6rem'}}></div>
       <Container style={{
         minHeight:'calc(100% - 6rem + 1px)',
         minWidth:'100%',

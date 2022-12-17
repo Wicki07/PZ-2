@@ -11,7 +11,7 @@ import string
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username', 'email', 'role', 'first_name', 'last_name')
+        fields = ['id', 'username', 'email', 'role', 'first_name', 'last_name']
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
