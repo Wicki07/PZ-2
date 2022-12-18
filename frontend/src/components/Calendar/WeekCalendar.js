@@ -5,6 +5,25 @@ import { getMonthName, getWeekNumber } from "../../helpers/helpers"
 
 function WeekCalendar(props) {
 
+  const [activities, setActivities] = useState([])
+
+  const getActivities = async ({start, end}) => {
+    await fetch(`http://localhost:8000/api/activity?start=${start}&end=${end}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json', 
+        "Accept": "application/json", 
+        "Authorization": localStorage.getItem("token")
+      ? "Token " + localStorage.getItem("token")
+      : null,},
+    }).then(async (res) => {
+      const data = await res.json();
+      if(res.status === 200) {
+        setActivities(data)
+      }
+    })
+  }
+
   const prepareCalendar = () => {
     let today = new Date() 
     // Pobieramy pierwszy dzień miesiaca
@@ -27,7 +46,7 @@ function WeekCalendar(props) {
       if(dayCount === 0){
         weeksArray.push([])
       }
-      weeksArray[week-1].push({number: calendarStartDay.getDate(), month: calendarStartDay.getMonth(),day: dayCount});
+      weeksArray[week-1].push({number: calendarStartDay.getDate(), month: calendarStartDay.getMonth(),day: dayCount, date: calendarStartDay.toISOString().slice(0,10)});
       dayCount++;
       calendarStartDay.setDate(calendarStartDay.getDate() + 1);
       if (dayCount === 7) {
@@ -36,6 +55,9 @@ function WeekCalendar(props) {
       }
     }
 
+    if(!activities.length){
+      getActivities({start: weeksArray[0][0].date, end: weeksArray[weeksArray.length - 1][6].date})
+    }
     // Zwracamy przygotowaną tablicę
     return weeksArray
   }
@@ -44,13 +66,19 @@ function WeekCalendar(props) {
   const [windowsize] = useState({width:window.innerWidth, height:window.innerHeight})
   // const onWindowResize = useGlobalEvent("resize")
 
-  const Day = (date, activities) => {
+  const Day = ({date}) => {
     let today = new Date() 
     // Ustawienie dzi poza zakresem berzącego miesiąca na półprzezroczyste
-    let opacity = today.getMonth() === date.date.month ? 1 : 0.5
+    let opacity = today.getMonth() === date.month ? 1 : 0.5
+
+    const events = [];
+    activities.filter(el => el.date === date.date).forEach(el => events.push(
+      <div onClick={()=>{console.log(el)}}className="rounded my-1 p-1 bg-primary text-white text-overflow">{el.name}</div>
+    ))
     return (
-      <div style={{opacity:opacity}}><div onClick={()=>{console.log('test3')}} className="rounded my-1 p-2 bg-primary text-white"><b>Test</b><br/><i>Imie nazwisko</i><br/><i>Imie nazwisko</i><br/><font size='2'>OD</font> 10:00 <font size='2'>DO</font> 12:00</div>
-        <div onClick={()=>{console.log('test3')}} className="rounded my-1 p-2 bg-primary text-white"><b>Test</b><br/><i>Imie nazwisko</i><br/><i>Imie nazwisko</i><br/><font size='2'>OD</font> 10:00 <font size='2'>DO</font> 12:00</div>
+      <div style={{opacity:opacity}}>
+        <font className={date.day > 4 ? 'text-danger': 'text-dark'}><b>{date.number}</b></font>
+        {events}
       </div>
     )
   } 
@@ -63,8 +91,8 @@ function WeekCalendar(props) {
 
   const CalendarMenu = () =>{
     return(
-      <div id='CalendarMenu' className="position-fixed w-100 shadow" style={{zIndex:'1001'}}>
-        <div className="bg-primary text-white text-center row" style={{height:'3rem'}}>
+      <div id='CalendarMenu' className="w-100 shadow" style={{zIndex:'1001'}}>
+        <div className="bg-primary text-white text-center row" style={{height:'3rem', marginLeft: "0", marginRight: "0"}}>
           <span className="col my-auto">{ getMonthName() } { new Date().getFullYear() }</span>
           {/* <Button onClick={()=>props.changeDisplayMode('day')} style={{marginRight:'1rem'}}>Dzisiaj</Button>
           <Button onClick={()=>props.changeDisplayMode('week')} style={{marginRight:'1rem'}}>Tydzień</Button>
@@ -72,8 +100,7 @@ function WeekCalendar(props) {
         </div>
         <Container style={{
           minHeight:'calc(100% - 3rem + 1px)',
-          width:  windowsize.width > 320 ? 'calc(100% - 0.5rem)' : '100%',
-          marginLeft:'-0.25rem',
+          width: '100%',
           display: 'grid',
           overflow:'hidden',
           padding:'0',
@@ -99,7 +126,6 @@ function WeekCalendar(props) {
   return (
     <>
       <CalendarMenu/>
-      <div className="bg-primary text-white text-center row" style={{height:'6rem'}}></div>
       <Container style={{
         minHeight:'calc(100% - 6rem + 1px)',
         minWidth:'100%',

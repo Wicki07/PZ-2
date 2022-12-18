@@ -19,7 +19,7 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception = True)
         user = serializer.save()
         if request.data['isBusiness']:
-          Business.objects.create(user_id=user, category = request.data['category'])
+          Business.objects.create(user=user, category = request.data['category'])
         return Response({
             "user": UserSerializer(user, context = self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1]
@@ -80,3 +80,20 @@ class UsersActivationAccountViewSet(generics.RetrieveAPIView):
             return user
         else:
             return Response({'message': '{} Konto zostało już aktywowane'}, status=status.HTTP_204_NO_CONTENT)
+
+class BusinessViewSet(generics.RetrieveAPIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    serializer_class = UserSerializer
+
+    default_serializer_class = UserSerializer
+    
+    def get_object(self):
+        User = get_user_model()
+        users = User.objects.filter(role = "business")
+        serializer = UserSerializer(users)
+        return serializer.data,
+
+
