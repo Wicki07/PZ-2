@@ -17,10 +17,26 @@ class ActivityAPI(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        id = request.query_params.get('business')
-        data = Activity.objects.filter(business = id, base_activity = None)
-        serializer = AcitivitySerializer(data, many=True)
-        return Response(serializer.data)
+        user = get_user_model().objects.filter(id = request.user.id).first()
+        business = Business.objects.filter(user = request.user.id).first()
+        if request.query_params.get('start', None) is not None and request.query_params.get('end', None) is not None:
+            activiteisQuery = Activity.objects.filter(date__range=(request.query_params['start'], request.query_params['end']))
+
+        if request.query_params.get('start', None) is not None and request.query_params.get('end', None) is None:
+            activiteisQuery = Activity.objects.filter(date__gte=request.query_params['start'])
+
+        if request.query_params.get('end', None) is not None and request.query_params.get('start', None) is None:
+            activiteisQuery = Activity.objects.filter(date__lte=request.query_params['end'])
+        if(business):
+            activiteis = activiteisQuery.filter(business_id = business.id).all()
+        else:
+            praticipations = Praticipation.objects.filter(user_id=user.id).all()
+            activiteis = []
+            for praticipation in praticipations:
+                activity = activiteisQuery.filter(id = praticipation.activity_id).first()
+                if(activity):
+                    activiteis.append(activity)
+        return Response(AcitivitySerializer(activiteis, many=True).data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         business = Business.objects.filter(user = request.user.id).first()

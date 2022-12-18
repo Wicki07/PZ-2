@@ -94,7 +94,6 @@ class BusinessViewSet(generics.RetrieveAPIView):
         User = get_user_model()
         users = User.objects.filter(role = "business")
         serializer = UserSerializer(users)
-        print(serializer.data)
         return serializer.data,
 
 
