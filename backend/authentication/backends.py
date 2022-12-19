@@ -9,8 +9,9 @@ UserModel = get_user_model()
 class EmailBackend(ModelBackend):
     def authenticate(self, data, **kwargs):
         try:
-            user = UserModel.objects.filter(email=data['email']).first()
+            user = UserModel.objects.get(email=data.POST.get('username'))
         except UserModel.DoesNotExist:
-            return
-        if user.check_password(data['password']):
+            return None
+        
+        if user.check_password(data.POST.get('password')):
             return user
