@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Alert, InputGroup } from 'react-bootstrap';
@@ -7,6 +7,12 @@ function InstitutionDataSettings(props){
 
   const [ errors, setErrors ] = useState({})
   const [ form, setForm ] = useState({})
+  const [ user, setUser ] = useState({})
+  
+  useEffect(() => {
+    const userData = localStorage.getItem("user") === "undefined" ? "{}" : localStorage.getItem("user");
+    setUser(JSON.parse(userData))
+  }, [])
 
   const validation = async (e) => {
     e.preventDefault();
@@ -33,26 +39,22 @@ function InstitutionDataSettings(props){
       formValidated = false
       newErrors.phone = 'Zły format telefonu!'
     }
-    console.log(form)
-    // Rejestracja
-    newErrors.requestErrors = undefined
+    
     if(formValidated){
-      await fetch("http://localhost:8000/api/auth/requestErrors", {
+      await fetch("http://localhost:8000/api/auth/datachange", {
         method: 'POST',
         headers: {'Content-Type': 'application/json', "Accept": "application/json",},
         body: JSON.stringify({...form, 
-          role: 'business',
-          isBusiness: true}) 
+          email: user.email}) 
       }).then(async (res) => {
-        const data = await res.json();
         if(res.status === 400) {
-          newErrors.requestErrors = data.email[0] === "Istnieje już User z tą wartością pola adres email." ? 
-            "Użytkownik o podanym emailu już istnieje" : ""
+          newErrors.requestErrors = "Coś poszłonie tak spróbuj ponownie"
         } else {
-          props.setShowModal(true);
+          newErrors.success = true
           setForm({})
         }
       })
+
     }
 
     setErrors(newErrors)
@@ -103,6 +105,7 @@ function InstitutionDataSettings(props){
       </Form.Group>
       <Form.Group>
         <Alert variant={'danger'} show={ !!errors.requestErrors } type='invalid'>{ errors.requestErrors }</Alert>
+        <Alert variant={'success'} show={ !!errors.success } type='invalid'>Pomyślnie zmieniono dane</Alert>
       </Form.Group>
       <Form.Group className="text-center pt-4">
         <Button className="rounded-pill col-6" type='submit' onClick={ validation }>Zapisz zmiany</Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 // import { useGlobalEvent } from "beautiful-react-hooks";
 import { getMonthName, getWeekNumber } from "../../helpers/helpers"
@@ -9,8 +9,9 @@ function WeekCalendar(props) {
 
   const [activities, setActivities] = useState([])
   const [ showmodal, setShowModal ] = useState(false)
+  let getData = true
   
-  let selectedDay = {};
+  const [ selectedDay, setSelectedDay ] = useState({})
 
   const getActivities = async ({start, end}) => {
     await fetch(`http://localhost:8000/api/activity?start=${start}&end=${end}`, {
@@ -26,48 +27,53 @@ function WeekCalendar(props) {
       if(res.status === 200) {
         setActivities(data)
       }
+      getData = false
     })
   }
-
-  const prepareCalendar = () => {
-    let today = new Date() 
-    // Pobieramy pierwszy dzień miesiaca
-    let monthStart = new Date(today.getFullYear(), today.getMonth())
-    // Pobieramy index pierwszego dnia miesiąca (odejmujemy 1 aby zaczynac od poniedziałku)
-    let monthStartDayIndex = monthStart.getDay() - 1
-    // will fill with sub arrays for each week
-    let weeksArray = []
-    let week = 1
-
-
-    // Ustawiamy datę rozpoczęcia miesiąca
-    var calendarStartDay = new Date(monthStart);
-    // Ustawiamy datę na niezielę tygodnia poprzedzającego ten w którym jest dzień rozpoczynający nasz miesiąc
-    calendarStartDay.setDate(monthStart.getDate() - monthStartDayIndex)
-
-    // Budujemy tablicę tygodni a w nich numery dni miesiąca
-    var dayCount = 0
-    while (week < 7) {
-      if(dayCount === 0){
-        weeksArray.push([])
+  const [monthdays, setMonthDays] = useState([])
+  
+  
+  useEffect(() => {
+    const prepareCalendar = async () => {
+      let today = new Date() 
+      // Pobieramy pierwszy dzień miesiaca
+      let monthStart = new Date(today.getFullYear(), today.getMonth())
+      // Pobieramy index pierwszego dnia miesiąca (odejmujemy 1 aby zaczynac od poniedziałku)
+      let monthStartDayIndex = monthStart.getDay() - 1
+      // will fill with sub arrays for each week
+      let weeksArray = []
+      let week = 1
+  
+  
+      // Ustawiamy datę rozpoczęcia miesiąca
+      var calendarStartDay = new Date(monthStart);
+      // Ustawiamy datę na niezielę tygodnia poprzedzającego ten w którym jest dzień rozpoczynający nasz miesiąc
+      calendarStartDay.setDate(monthStart.getDate() - monthStartDayIndex)
+  
+      // Budujemy tablicę tygodni a w nich numery dni miesiąca
+      var dayCount = 0
+      while (week < 7) {
+        if(dayCount === 0){
+          weeksArray.push([])
+        }
+        weeksArray[week-1].push({number: calendarStartDay.getDate(), month: calendarStartDay.getMonth(),day: dayCount, date: calendarStartDay.toISOString().slice(0,10)});
+        dayCount++;
+        calendarStartDay.setDate(calendarStartDay.getDate() + 1);
+        if (dayCount === 7) {
+          week++;
+          dayCount = 0
+        }
       }
-      weeksArray[week-1].push({number: calendarStartDay.getDate(), month: calendarStartDay.getMonth(),day: dayCount, date: calendarStartDay.toISOString().slice(0,10)});
-      dayCount++;
-      calendarStartDay.setDate(calendarStartDay.getDate() + 1);
-      if (dayCount === 7) {
-        week++;
-        dayCount = 0
+  
+      if(!activities.length && getData){
+        await getActivities({start: weeksArray[0][0].date, end: weeksArray[weeksArray.length - 1][6].date})
       }
+      // Zwracamy przygotowaną tablicę
+      setMonthDays(weeksArray)
+      return weeksArray
     }
-
-    if(!activities.length){
-      getActivities({start: weeksArray[0][0].date, end: weeksArray[weeksArray.length - 1][6].date})
-    }
-    // Zwracamy przygotowaną tablicę
-    return weeksArray
-  }
-
-  const [monthdays] = useState(prepareCalendar())
+    prepareCalendar()
+  }, [])
   const [windowsize] = useState({width:window.innerWidth, height:window.innerHeight})
   // const onWindowResize = useGlobalEvent("resize")
 
@@ -78,7 +84,7 @@ function WeekCalendar(props) {
 
     const events = [];
     activities.filter(el => el.date === date.date).forEach(el => events.push(
-      <div onClick={()=>{setShowModal(true); selectedDay = el}}className="rounded my-1 p-1 bg-primary text-white text-overflow">{el.name}</div>
+      <div onClick={()=>{setShowModal(true); setSelectedDay(el)}}className="rounded my-1 p-1 bg-primary text-white text-overflow">{el.name}</div>
     ))
     return (
       <div style={{opacity:opacity}}>
@@ -90,7 +96,7 @@ function WeekCalendar(props) {
   const getWeekDayNameAndNumber = (dayNumber) =>{
     const daysNames = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
     const daysNamesShort = ['Pn','Wt','Śr','Cz','Pt','Sb','Nd']
-    return <>{monthdays[getWeekNumber()][dayNumber].number} <font size="2">{(windowsize.width >= 872 ? daysNames[dayNumber] : daysNamesShort[dayNumber])}</font></>
+    return <>{monthdays[getWeekNumber()]?.[dayNumber].number} <font size="2">{(windowsize.width >= 872 ? daysNames[dayNumber] : daysNamesShort[dayNumber])}</font></>
   }
 
   const CalendarMenu = () =>{
@@ -129,7 +135,6 @@ function WeekCalendar(props) {
   const modal = () => {
     return (
       <Modal
-        {...props}
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
         show={showmodal}
@@ -144,7 +149,7 @@ function WeekCalendar(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{border:'none'}}>
-          <p>{selectedDay}</p>
+          {JSON.stringify(selectedDay)}
         </Modal.Body>
         <Modal.Footer className="align-left" style={{border:'none'}}>
           <a href="../../login" style={{float:'right'}} id="signup"><Button className="rounded-pill">Wróć do panelu logowania</Button></a>

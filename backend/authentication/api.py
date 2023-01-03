@@ -72,8 +72,8 @@ class DataChangeAPI(generics.GenericAPIView):
                 business[0].category = request.data['category'] if request.data.__contains__('category') else business[0].category
                 business[0].save()
             user.username = request.data['username'] if request.data.__contains__('username') else user.username
-            user.first_name = request.data['firstName'] if request.data.__contains__('firstName') else user.first_name
-            user.last_name = request.data['lastName'] if request.data.__contains__('lastName') else user.last_name
+            user.first_name = request.data['first_name'] if request.data.__contains__('first_name') else user.first_name
+            user.last_name = request.data['last_name'] if request.data.__contains__('last_name') else user.last_name
             user.phone = request.data['phone'] if request.data.__contains__('phone') else user.phone
             user.save()
         return Response({
