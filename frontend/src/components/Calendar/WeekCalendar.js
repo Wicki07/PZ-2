@@ -5,11 +5,13 @@ import { getMonthName, getWeekNumber } from "../../helpers/helpers"
 import { Modal } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { Alert } from 'react-bootstrap';
 
 function WeekCalendar() {
 
   const [activities, setActivities] = useState([])
   const [ showmodal, setShowModal ] = useState(false)
+  const [ success, setSuccess ] = useState(false)
   const [ message, setMessage ] = useState("")  
   const [ user, setUser ] = useState({})
   
@@ -153,6 +155,8 @@ function WeekCalendar() {
         
       } else {
         setMessage("")
+        setSuccess(true)
+        setTimeout(() => {setShowModal(false); setSuccess(false)}, 2000)
       }
     })
   }
@@ -177,6 +181,7 @@ function WeekCalendar() {
             <Form.Label>Wiadomość</Form.Label>
             <Form.Control onChange={ e => setMessage(e.target.value) } as="textarea" rows={3} />
           </Form.Group>
+          <Alert variant={'success'} show={ !!success } type='invalid'>Wiadomość została wysłana</Alert>
         </Modal.Body>
         <Modal.Footer className="align-left" style={{border:'none'}}>
           <Button onClick={send} className="rounded-pill">Wyślij</Button>
