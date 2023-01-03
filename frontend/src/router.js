@@ -6,6 +6,7 @@ import Login from './pages/Authentication/Login';
 import Register from './pages/Authentication/Register';
 import Activate from './pages/Authentication/Activate';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Settings from './pages/Settings/Settings';
 import CreateActivity from './pages/Activities/CreateActivity';
 import WeekCalendar from './components/Calendar/WeekCalendar';
 import MonthCalendar from './components/Calendar/MonthCalendar';
@@ -36,6 +37,10 @@ const router =
         {
           path: "dayCalendar",
           element: <DayCalendar />,
+        },
+        {
+          path: "settings",
+          element: <Settings />,
         },
       ]
     },

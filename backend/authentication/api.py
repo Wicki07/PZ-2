@@ -7,6 +7,11 @@ from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.contrib.auth.models import User
+from django.utils.encoding import force_text
+import random
+import string
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -44,12 +49,70 @@ class PasswordResetAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        user = User.objects.get(username=request.data['username'])
-        user.set_password(request.data['password'])
-        user.save()
+        serializer = self.get_serializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        if user:
+            user = get_user_model().objects.get(email=request.data['email'])
+            user.set_password(request.data['newPassword'])
+            user.save()
         return Response({
             "user": UserSerializer(user, context = self.get_serializer_context()).data,
         })
+
+
+class DataChangeAPI(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        user = get_user_model().objects.get(email=request.data['email'])
+        if user:
+            business = Business.objects.filter(user_id=user.id)
+            if business:
+                business[0].category = request.data['category'] if request.data.__contains__('category') else business[0].category
+                business[0].save()
+            user.username = request.data['username'] if request.data.__contains__('username') else user.username
+            user.first_name = request.data['firstName'] if request.data.__contains__('firstName') else user.first_name
+            user.last_name = request.data['lastName'] if request.data.__contains__('lastName') else user.last_name
+            user.phone = request.data['phone'] if request.data.__contains__('phone') else user.phone
+            user.save()
+        return Response({
+            "user": UserSerializer(user, context = self.get_serializer_context()).data,
+        })
+
+class EmailChangeAPI(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        user = get_user_model().objects.get(email=request.data['email'])
+        try:
+            usercheck = get_user_model().objects.get(email=request.data['newEmail'])
+        except get_user_model().DoesNotExist:
+            usercheck = None
+        if user and not usercheck:
+            user.email = request.data['newEmail'] if request.data.__contains__('newEmail') else user.email
+            user.is_active = False
+            user.save()
+            generated_activate_key_size = 64
+            generated_activate_key_chars = string.ascii_letters + string.digits
+            generated_activate_key = ''.join(random.choice(generated_activate_key_chars) for _ in range(generated_activate_key_size))
+            UserActivate.objects.create(user_id=user,activate_code=generated_activate_key)
+            subject = force_text('Zmiana maila w serwisie PZ-2')
+            from_mail = force_text('projekt@pz.pl')
+            message = render_to_string('mail/changeEmail.html', {
+                'user': user,
+                'activate_link': 'http://localhost:3000/auth/activate/' + generated_activate_key
+            })
+            email = EmailMultiAlternatives( subject, message, from_mail, [user.email])
+            email.mixed_subtype = 'related'
+            email.attach_alternative(message, "text/html")
+            email.send()
+            return Response({
+                "user": UserSerializer(user, context = self.get_serializer_context()).data,
+            })
+        else:
+            return Response({'message': 'Mail jest już zajęty'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class UserAPI(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated,]

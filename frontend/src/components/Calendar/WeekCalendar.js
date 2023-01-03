@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
 // import { useGlobalEvent } from "beautiful-react-hooks";
 import { getMonthName, getWeekNumber } from "../../helpers/helpers"
+import { Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 
 function WeekCalendar(props) {
 
   const [activities, setActivities] = useState([])
+  const [ showmodal, setShowModal ] = useState(false)
+  
+  let selectedDay = {};
 
   const getActivities = async ({start, end}) => {
     await fetch(`http://localhost:8000/api/activity?start=${start}&end=${end}`, {
@@ -73,7 +78,7 @@ function WeekCalendar(props) {
 
     const events = [];
     activities.filter(el => el.date === date.date).forEach(el => events.push(
-      <div onClick={()=>{console.log(el)}}className="rounded my-1 p-1 bg-primary text-white text-overflow">{el.name}</div>
+      <div onClick={()=>{setShowModal(true); selectedDay = el}}className="rounded my-1 p-1 bg-primary text-white text-overflow">{el.name}</div>
     ))
     return (
       <div style={{opacity:opacity}}>
@@ -85,7 +90,6 @@ function WeekCalendar(props) {
   const getWeekDayNameAndNumber = (dayNumber) =>{
     const daysNames = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
     const daysNamesShort = ['Pn','Wt','Śr','Cz','Pt','Sb','Nd']
-    console.log()
     return <>{monthdays[getWeekNumber()][dayNumber].number} <font size="2">{(windowsize.width >= 872 ? daysNames[dayNumber] : daysNamesShort[dayNumber])}</font></>
   }
 
@@ -122,9 +126,35 @@ function WeekCalendar(props) {
   // onWindowResize((event) => {
   //   setWindowSize({width:window.innerWidth, height:window.innerHeight})
   // })
-
+  const modal = () => {
+    return (
+      <Modal
+        {...props}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        show={showmodal}
+        onHide={() => setShowModal(false)}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header style={{border:'none'}} closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Wyślij wiadomość
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{border:'none'}}>
+          <p>{selectedDay}</p>
+        </Modal.Body>
+        <Modal.Footer className="align-left" style={{border:'none'}}>
+          <a href="../../login" style={{float:'right'}} id="signup"><Button className="rounded-pill">Wróć do panelu logowania</Button></a>
+        </Modal.Footer>
+      </Modal>
+    )
+  }
   return (
     <>
+    {modal()}
       <CalendarMenu/>
       <Container style={{
         minHeight:'calc(100% - 6rem + 1px)',

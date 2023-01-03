@@ -22,6 +22,9 @@ function Dashboard() {
             <li>
               <a href="/dashboard/weekCalendar">Kalendarz</a>
             </li>
+            <li>
+              <a href="/dashboard/settings">Ustawienia</a>
+            </li>
           </ul>
         </div>
         <div style={{height: "100%", width: "100%", padding: "50px 50px 50px 100px"}}>
