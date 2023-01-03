@@ -1,8 +1,9 @@
 from django.urls import path
 from django.urls.conf import path, include
-from .api import ActivityAPI, PraticipationAPI
+from .api import ActivityAPI, PraticipationAPI, NotificationAPI
 
 urlpatterns = [
     path('api/activity', ActivityAPI.as_view()),
     path('api/participation', PraticipationAPI.as_view()),
+    path('api/notification', NotificationAPI.as_view()),
 ]

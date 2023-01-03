@@ -3,12 +3,20 @@ import { Container } from 'react-bootstrap';
 // import { useGlobalEvent } from "beautiful-react-hooks";
 import { getMonthName, getWeekNumber } from "../../helpers/helpers"
 import { Modal } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-function WeekCalendar(props) {
+function WeekCalendar() {
 
   const [activities, setActivities] = useState([])
   const [ showmodal, setShowModal ] = useState(false)
+  const [ message, setMessage ] = useState("")  
+  const [ user, setUser ] = useState({})
+  
+  useEffect(() => {
+    const userData = localStorage.getItem("user") === "undefined" ? "{}" : localStorage.getItem("user");
+    setUser(JSON.parse(userData))
+  }, [])
   let getData = true
   
   const [ selectedDay, setSelectedDay ] = useState({})
@@ -129,9 +137,25 @@ function WeekCalendar(props) {
     )
   }
 
-  // onWindowResize((event) => {
-  //   setWindowSize({width:window.innerWidth, height:window.innerHeight})
-  // })
+  const send = () => {
+    fetch("http://localhost:8000/api/notification", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+        "Accept": "application/json", 
+        Authorization: localStorage.getItem("token")
+          ? "Token " + localStorage.getItem("token")
+          : null,
+      },
+      body: JSON.stringify({message: message, activity: selectedDay, ...user}) 
+    }).then(async (res) => {
+      if(res.status === 400) {
+        
+      } else {
+        setMessage("")
+      }
+    })
+  }
   const modal = () => {
     return (
       <Modal
@@ -149,10 +173,13 @@ function WeekCalendar(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{border:'none'}}>
-          {JSON.stringify(selectedDay)}
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+            <Form.Label>Wiadomość</Form.Label>
+            <Form.Control onChange={ e => setMessage(e.target.value) } as="textarea" rows={3} />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer className="align-left" style={{border:'none'}}>
-          <a href="../../login" style={{float:'right'}} id="signup"><Button className="rounded-pill">Wróć do panelu logowania</Button></a>
+          <Button onClick={send} className="rounded-pill">Wyślij</Button>
         </Modal.Footer>
       </Modal>
     )

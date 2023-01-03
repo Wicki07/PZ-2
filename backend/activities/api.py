@@ -9,6 +9,11 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from knox.auth import TokenAuthentication
 import datetime
+from django.utils.encoding import force_text
+import random
+import string
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 class ActivityAPI(generics.GenericAPIView):
     serializer_class = AcitivitySerializer
@@ -91,4 +96,44 @@ class PraticipationAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception = True)
         participation = serializer.save()
         return Response(PraticipationSerializer(participation).data, status=status.HTTP_204_NO_CONTENT)
+
+class NotificationAPI(generics.GenericAPIView):
+    serializer_class = PraticipationSerializer
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if request.data['role'] == 'business':
+            participations = Praticipation.objects.filter(activity_id = request.data['activity']['id']).all()
+            for participation in participations:
+                subject = force_text('Wiadomość odnośnie zajęć: ' + request.data['activity']['name'])
+                from_mail = force_text('projekt@pz.pl')
+                reciver = get_user_model().objects.filter(id = participation.user_id).first()
+                sender = get_user_model().objects.filter(id = request.data['id']).first()
+                message = render_to_string('mail/notify.html', {
+                    'sender': sender,
+                    'reciver': reciver,
+                    'message': request.data['message']
+                })
+                email = EmailMultiAlternatives( subject, message, from_mail, [reciver.email])
+                email.mixed_subtype = 'related'
+                email.attach_alternative(message, "text/html")
+                email.send()
+        else :
+            subject = force_text('Wiadomość odnośnie zajęć: ' + request.data['activity']['name'])
+            from_mail = force_text('projekt@pz.pl')
+            business = Business.objects.filter(id = request.data['activity']['business']).first()
+            reciver = get_user_model().objects.filter(id = business.user_id).first()
+            sender = get_user_model().objects.filter(id = request.data['id']).first()
+            message = render_to_string('mail/notify.html', {
+                'sender': business,
+                'reciver': reciver,
+                'message': request.data['message']
+            })
+            email = EmailMultiAlternatives( subject, message, from_mail, [reciver.email])
+            email.mixed_subtype = 'related'
+            email.attach_alternative(message, "text/html")
+            email.send()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
