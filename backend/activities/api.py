@@ -127,7 +127,7 @@ class NotificationAPI(generics.GenericAPIView):
             reciver = get_user_model().objects.filter(id = business.user_id).first()
             sender = get_user_model().objects.filter(id = request.data['id']).first()
             message = render_to_string('mail/notify.html', {
-                'sender': business,
+                'sender': sender,
                 'reciver': reciver,
                 'message': request.data['message']
             })
